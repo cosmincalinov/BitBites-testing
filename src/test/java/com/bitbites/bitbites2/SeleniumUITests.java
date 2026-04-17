@@ -27,6 +27,9 @@ class SeleniumUITests {
 
     private static final String BASE_URL = "http://localhost:8080";
 
+    private static final String INVALID_USERNAME = "nonexistent_user_xyz";
+    private static final String INVALID_PASSWORD = "wrongpassword123";
+
     private WebDriver driver;
     private WebDriverWait wait;
 
