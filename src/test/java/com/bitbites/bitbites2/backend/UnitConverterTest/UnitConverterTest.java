@@ -43,4 +43,39 @@ public class UnitConverterTest {
         });
     }
 
+    // b) Boundary Values
+    /*
+        T1: Cantitate nula
+        T2: Cantitate negativa
+        T3: Cantitate foarte mica
+        T4: Cantitate mare
+     */
+
+    @Test
+    public void TestConverterZero() { // T1
+        double res = UnitConverter.convert(0, Unit.LITER, Unit.MILLILITER);
+        assertEquals(0, res, 0.001);
+    }
+
+    @Test
+    public void TestConverterNegative() { // T2
+        assertThrows(IllegalArgumentException.class, () -> {
+            UnitConverter.convert(-1, Unit.KILOGRAM, Unit.SPOON);
+        });
+    }
+
+    @Test
+    public void TestConverterSmall() { // T3
+        double res = UnitConverter.convert(0.000001, Unit.KILOGRAM, Unit.GRAM);
+        assertEquals(0.001, res, 0.0000001);
+    }
+
+    @Test
+    public void TestConverterBig() { // T4
+        double res = UnitConverter.convert(1000000, Unit.GRAM, Unit.KILOGRAM);
+        assertEquals(1000, res, 0.001);
+    }
+
+    // c) Partitionare pe categorii
+
 }
