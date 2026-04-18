@@ -71,12 +71,13 @@ public class SeleniumUITests {
     @Order(1)
     void testLoginPageLoads() {
         driver.get(BASE_URL + "/user/login");
-        String title = driver.getTitle();
-        assertNotNull(title, "Page title should not be null");
-        assertFalse(title.isBlank(), "Page title should not be blank");
+        // Wait for the heading first; by then the page title is populated too.
         WebElement heading = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.tagName("h3")));
         assertEquals("Login", heading.getText());
+        String title = driver.getTitle();
+        assertNotNull(title, "Page title should not be null");
+        assertFalse(title.isBlank(), "Page title should not be blank");
     }
 
     @Test
@@ -157,7 +158,8 @@ public class SeleniumUITests {
     @Order(7)
     void testNavigateFromLoginToRegister() {
         driver.get(BASE_URL + "/user/login");
-        WebElement registerLink = driver.findElement(By.cssSelector("a[href*='/user/register']"));
+        WebElement registerLink = wait.until(
+                ExpectedConditions.elementToBeClickable(By.cssSelector("a[href*='/user/register']")));
         registerLink.click();
 
         wait.until(ExpectedConditions.urlContains("/user/register"));
@@ -169,7 +171,8 @@ public class SeleniumUITests {
     @Order(8)
     void testNavigateFromRegisterToLogin() {
         driver.get(BASE_URL + "/user/register");
-        WebElement loginLink = driver.findElement(By.cssSelector("a[href*='/user/login']"));
+        WebElement loginLink = wait.until(
+                ExpectedConditions.elementToBeClickable(By.cssSelector("a[href*='/user/login']")));
         loginLink.click();
 
         wait.until(ExpectedConditions.urlContains("/user/login"));
