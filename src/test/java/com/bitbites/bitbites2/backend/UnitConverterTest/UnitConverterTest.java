@@ -98,8 +98,52 @@ public class UnitConverterTest {
         // Bucatarie -> masa
         double res = UnitConverter.convert(10, Unit.SPOON, Unit.GRAM);
         assertEquals(200, res, 0.001);
+    } // Celelalte teste au fost acoperite in grupele a) si b)
+
+
+    // d) Statement Coverage
+    @Test
+    public void TestStmt_convert() {
+        // Ramura LITER
+        assertEquals(1000, UnitConverter.convert(1, Unit.LITER, Unit.MILLILITER), 0.001);
+
+        // Ramura KILOGRAM
+        assertEquals(5.0, UnitConverter.convert(1, Unit.KILOGRAM, Unit.CUP), 0.001);
+
+        // Exceptia din check-ul initial
+        assertThrows(IllegalArgumentException.class, () -> UnitConverter.convert(1, Unit.PIECE, Unit.GRAM));
     }
 
-    // Celelalte teste au fost acoperite in grupele a) si b)
+    // e) Decision Coverage
+    @Test
+    public void TestDec_convert() {
+        // Decizia 1: !forUnit.isCompatibleWith(toUnit) -> true
+        assertThrows(IllegalArgumentException.class, () -> UnitConverter.convert(5, Unit.PIECE, Unit.SPOON));
+
+        // Decizia 1: !forUnit.isCompatibleWith(toUnit) -> false
+        // Outer Switch: Case CUP
+        // Inner Switch: Case SPOON
+        assertEquals(20.0, UnitConverter.convert(2, Unit.CUP, Unit.SPOON), 0.001);
+    }
+
+    // Cyclomatic Complexity pentru convert()
+    // V(G) = 1 (if) + 6 (outer switch) + 25 (inner switch) + 1 (start point) = 33
+    /*
+        C1: Incompatibilitate initiala (if condition is true)
+        C2: Identitate (forUnit == toUnit) in interiorul unui switch
+        C3: Conversie reusita (o cale printr-un switch intern)
+        C4: Incompatibilitate in switch (default case - desi logic e prinsa de isCompatibleWith)
+     */
+    @Test
+    public void TestCirc_convert() {
+        // C1: Exceptie la inceput
+        assertThrows(IllegalArgumentException.class, () -> UnitConverter.convert(1, Unit.GRAM, Unit.PIECE));
+
+        // C2: Switch forUnit: MILLILITER -> Switch toUnit: MILLILITER (identitate)
+        assertEquals(500, UnitConverter.convert(500, Unit.MILLILITER, Unit.MILLILITER), 0.001);
+
+        // C3: Switch forUnit: GRAM -> Switch toUnit: KILOGRAM (conversie)
+        assertEquals(1.0, UnitConverter.convert(1000, Unit.GRAM, Unit.KILOGRAM), 0.001);
+    }
 
 }
