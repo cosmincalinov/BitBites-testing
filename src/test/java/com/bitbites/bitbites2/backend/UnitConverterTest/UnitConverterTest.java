@@ -77,5 +77,29 @@ public class UnitConverterTest {
     }
 
     // c) Partitionare pe categorii
+    /*
+        Variabile: quantity forUnit, toUnit
+        Categorii:
+            - forUnit: masa (GRAM, KILOGRAM), volum (LITER, MILILITER), bucatarie (CUP, SPOON),
+            unitar (PIECE)
+           - toUnit: Compatibil, Incompatibil
+           - quantity: pozitiv, negativ
+     */
+
+    @Test
+    public void TestConverterCat1() {
+        // Volum -> Bucatarie
+        double res = UnitConverter.convert(2, Unit.LITER, Unit.CUP);
+        assertEquals(10, res, 0.001);
+    }
+
+    @Test
+    public void TestConverterCat2() {
+        // Bucatarie -> masa
+        double res = UnitConverter.convert(10, Unit.SPOON, Unit.GRAM);
+        assertEquals(200, res, 0.001);
+    }
+
+    // Celelalte teste au fost acoperite in grupele a) si b)
 
 }
