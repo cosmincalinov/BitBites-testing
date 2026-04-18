@@ -48,9 +48,11 @@ public class SeleniumUITests {
     void setUp() {
         FirefoxOptions options = new FirefoxOptions();
         options.addArguments("--headless");
-        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+        options.setPageLoadStrategy(PageLoadStrategy.NONE);
         driver = new FirefoxDriver(options);
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+        // Implicit wait covers direct findElement calls after driver.get() returns
+        // immediately (NONE strategy does not block on page load at all).
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
