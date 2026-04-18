@@ -1,6 +1,6 @@
 package com.bitbites.bitbites2.backend.groceries;
 
-class UnitConverter {
+public class UnitConverter {
     /**
      * Convert from a unit to another.
      * @param quantity the quantity in the first unit
@@ -9,7 +9,7 @@ class UnitConverter {
      * @return the quantity in the second unit
      * @throws IllegalArgumentException if the units are incompatible
      */
-    static double convert(double quantity, Unit forUnit, Unit toUnit) throws IllegalArgumentException {
+    public static double convert(double quantity, Unit forUnit, Unit toUnit) throws IllegalArgumentException {
         if (!forUnit.isCompatibleWith(toUnit)) {
             throw new IllegalArgumentException(String.format("%s is not compatible with %s", toUnit, forUnit));
         }
