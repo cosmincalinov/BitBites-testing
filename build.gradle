@@ -24,6 +24,7 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.7.5'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.testng:testng:7.10.2'
+    testImplementation 'org.seleniumhq.selenium:htmlunit-driver:4.13.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
