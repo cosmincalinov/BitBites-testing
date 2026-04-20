@@ -23,9 +23,19 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.17.2'
     implementation 'org.postgresql:postgresql:42.7.5'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.testng:testng:7.10.2'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.register('testWithTestNG', Test) {
+    description = 'Runs TestNG tests.'
+    group = 'verification'
+    useTestNG()
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    include '**/testng_gpt_codex_5_3/**'
 }
