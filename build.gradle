@@ -24,8 +24,44 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.7.5'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // TestNG
+    testImplementation 'org.testng:testng:7.10.2'
+
+    // Selenium
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.21.0'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
 }
 
+// Default test task: JUnit only
 tasks.named('test') {
     useJUnitPlatform()
+    exclude '**/testng/**'
+    exclude '**/selenium/**'
+}
+
+// TestNG task
+tasks.register('testNG', Test) {
+    useTestNG()
+    include '**/testng/**'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+
+    reports {
+        html.outputLocation = layout.buildDirectory.dir("reports/tests/testNG")
+        junitXml.outputLocation = layout.buildDirectory.dir("test-results/testNG")
+    }
+}
+
+// Selenium task
+tasks.register('seleniumTest', Test) {
+    useJUnitPlatform()
+    include '**/selenium/**'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+
+    reports {
+        html.outputLocation = layout.buildDirectory.dir("reports/tests/selenium")
+        junitXml.outputLocation = layout.buildDirectory.dir("test-results/selenium")
+    }
 }
