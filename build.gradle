@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.5.0'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'jacoco'
+    id 'info.solidsoft.pitest' version '1.15.0'
 }
 
 group = 'com.bitbites'
@@ -79,4 +80,16 @@ jacocoTestReport {
         html.required = true
         csv.required = true
     }
+}
+
+// PIT Mutation Testing
+pitest {
+    targetClasses = ['com.bitbites.bitbites2.backend.*']
+    targetTests = ['com.bitbites.bitbites2.backend.*']
+    pitestVersion = '1.17.1'
+    junit5PluginVersion = '1.2.1'
+    threads = 4
+    outputFormats = ['HTML', 'XML']
+    timestampedReports = false
+    mutators = ['DEFAULTS', 'STRONGER']
 }
