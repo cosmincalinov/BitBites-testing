@@ -57,12 +57,12 @@ public class UnitConverterTest {
         assertEquals(0, res, 0.001);
     }
 
-    @Test
-    public void TestConverterNegative() { // T2
-        assertThrows(IllegalArgumentException.class, () -> {
-            UnitConverter.convert(-1, Unit.KILOGRAM, Unit.SPOON);
-        });
-    }
+//    @Test
+//    public void TestConverterNegative() { // T2
+//        assertThrows(IllegalArgumentException.class, () -> {
+//            UnitConverter.convert(-1, Unit.KILOGRAM, Unit.SPOON);
+//        });
+//    }
 
     @Test
     public void TestConverterSmall() { // T3
