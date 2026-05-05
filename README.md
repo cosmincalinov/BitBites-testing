@@ -10,7 +10,7 @@ App presentation video here: [https://s.go.ro/iv7t6hs7](https://s.go.ro/iv7t6hs7
 
 Execution of tests: [https://s.go.ro/iv7t6hs7](https://s.go.ro/01vsnz9c)
 
-Powerpoint Presentation: [Java Unit Testing](presentation/Java Unit Testing.pptx)
+Powerpoint Presentation: [Java Unit Testing](presentation/Java%20Unit%20Testing.pptx)
 
 ## Features
 
