@@ -15,20 +15,13 @@
 
 BitBites is a Java-based meal planning application that generates weekly meal plans and grocery lists based on selected recipes. The system is designed with an object-oriented approach, utilizing inheritance and factory patterns to efficiently manage meal planning.
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 95a6453 (Update testing documentation and images)
 ## Videos and Presentation
 App presentation video here: [https://s.go.ro/iv7t6hs7](https://s.go.ro/iv7t6hs7)
 
 Execution of tests: [https://s.go.ro/iv7t6hs7](https://s.go.ro/01vsnz9c)
 
 Powerpoint Presentation: [Java Unit Testing](presentation/Java%20Unit%20Testing.pptx)
-<<<<<<< HEAD
 
-=======
->>>>>>> 95a6453 (Update testing documentation and images)
 ## Features
 
 - Define **ingredients** and categorize them.
