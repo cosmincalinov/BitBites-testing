@@ -90,7 +90,7 @@ graph TD;
 - needed to add some Model classes in order to make the database
   - collections and arrays from the objects are transform in foreign keys in included classes
   - added records to store the id keys and the foreign keys
-- added CRUD operations on all table (different functions for tables)
+- added CRUD operations on all tables (different functions for tables)
 
 ### Diagram
 ![img.png](img.png)
@@ -413,7 +413,7 @@ Dessert category special case (internal cap at kcal * 1.15 > 5000):
 
 **Why This Matters:**
 - **BV1 vs BV2:** Ensures 0-length names are rejected while 1-length names are accepted, and confirms the maximum boundary allows 100 characters but rejects 101 (condition should be `> 100`, not `>= 100`).
-- **BV5 vs BV6:** Catches mutations like `kilocalories <= 0` (allows 0) vs `kilocalories < 0` (allows 0).
+- **BV5 vs BV6:** Catches mutations like `kilocalories <= 0` (allows 0) vs `kilocalories < 0` (does not allow 0).
 - **BV13 vs BV14:** Validates the dessert cap logic is applied only when strictly exceeded, not at equality.
 
 **Floating-Point Precision:** BV6 (`0.001`) tests that the check is `<= 0` (not `< 0`), catching cases where kilocalories are extremely small but valid. This prevents rounding errors in formula calculations.
@@ -663,11 +663,11 @@ End-to-End (E2E) testing of the graphical user interface was performed using **S
 ---
 
 ### 8. References & Bibliography
-[1] R. S. Pressman, Software Engineering: A Practitioner's Approach (8th ed.), McGraw-Hill Education, 2014.
-[2] JUnit Team, JUnit 5 User Guide, https://junit.org/junit5/docs/current/user-guide/, Last accessed: May 3, 2026.
-[3] Selenium Team, Selenium WebDriver Documentation, https://www.selenium.dev/documentation/webdriver/, Last accessed: May 3, 2026.
-[4] GitHub Copilot, https://copilot.microsoft.com, Generated: May 3, 2026.
-[5] Google Gemini, https://gemini.google.com/app, Generated: May 3, 2026.
+1. R. S. Pressman, Software Engineering: A Practitioner's Approach (8th ed.), McGraw-Hill Education, 2014.
+2. JUnit Team, JUnit 5 User Guide, https://junit.org/junit5/docs/current/user-guide/, Last accessed: May 3, 2026.
+3. Selenium Team, Selenium WebDriver Documentation, https://www.selenium.dev/documentation/webdriver/, Last accessed: May 3, 2026.
+4. GitHub Copilot, https://copilot.microsoft.com, Generated: May 3, 2026.
+5. Google Gemini, https://gemini.google.com/app, Generated: May 3, 2026.
 ---
 
 ## License
