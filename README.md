@@ -172,8 +172,8 @@ To ensure modular and maintainable testing, the test classes are logically group
 The test suite was executed locally under the configured test environment. The execution yielded the following concrete metrics:
 
 **Execution Summary:**
-*   **Total Tests Executed:** 186
-*   **Tests Passed:** 186
+*   **Total Tests Executed:** 196
+*   **Tests Passed:** 196
 *   **Tests Failed:** 0
 *   **Execution Status:** ✅ SUCCESS
 
@@ -183,6 +183,22 @@ The coverage metrics were extracted using the IntelliJ IDEA Built-in Coverage Ru
 *   **Overall Backend Class Coverage:** 50%.
 *   **Overall Frontend Controller Class Coverage:** 40%.
 *   **Out of Scope Justification:** The overall line and branch coverage percentages logically reflect the deliberate exclusion of the Data Access Layer (`Repositories`) and database integration modules (`Services`) from the current unit testing phase. These structural components are explicitly out of scope for isolated unit tests and are reserved for future integration testing phases.
+
+### 2.4 AI Models Comparison in Unit Test Generation
+To evaluate the efficiency of artificial intelligence in the testing phase, we ran a comparative experiment using multiple AI models and a manual baseline. We compared test counts and coverage quality (class, method, line, and branch coverage).
+
+| AI Model | Passed Tests | Failed Tests | Class Coverage | Method Coverage | Line Coverage | Branch Coverage |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Opus 4.6** | 275 | 0 | 51% | 36% | 16% | 17% |
+| **Codex 5.2** | 40 | 0 | 48% | 30% | 12% | 10% |
+| **Opus 4.6 (with context)** | 285 | 0 | 50% | 28% | 15% | 19% |
+| **Manual** | 196 | 0 | 51% | 31% | 16% | 24% |
+| **Gemini 3.5 Pro** | 55 | 0 | 24% | 13% | 8% | 16% |
+
+### Analysis Conclusions:
+1. **Stability:** All suites completed with 0 failed tests, so coverage is the main differentiator in this comparison.
+2. **Context Impact (Opus 4.6):** Adding context increased the number of tests (275 to 285) and improved branch coverage (17% to 19%), but reduced method and line coverage (36% to 28%, and 16% to 15%).
+3. **Coverage Leaders and Laggards:** Opus 4.6 leads on class, method, and line coverage, while Opus 4.6 with context and Manual tie for best branch coverage (19%). Codex 5.2 and Gemini 3.5 Pro trail in coverage, with Gemini 3.5 Pro showing the lowest class and method coverage.
 ---
 ## 3. Black-Box Testing (Specification-Based)
 
@@ -206,7 +222,7 @@ Tests were implemented at the absolute edges of the defined equivalence partitio
 *   **`PasswordUtilsTest`:** Validated hashing stability at extreme boundaries: minimum non-empty length (1 character) and massive inputs (1000 characters).
 *   **`BoundaryValueTest` (`RecipeFactory`):** Tested absolute string length limits (0, 1, 100, 101 characters), numerical thresholds for calories (`0.001`, `5000.0`, `5000.001`), and serving limits (0, 1, 50, 51).
 *   **`RecipeTest`:** Tested duration assignments with boundary quantities (`0`).
-*   **`UnitConverterTest`:** Validated precision boundaries using micro-fractions (`0.000001`) and large thresholds (`1,000,000`) to check for floating-point accuracy and integer overflows. Negative quantities are not rejected by the current implementation, so no exception is expected for negative values.
+*   **`UnitConverterTest`:** Validated precision boundaries using micro-fractions (`0.000001`) and large thresholds (`1,000,000`) to check for floating-point accuracy and integer overflows.
 
 ![Tests](images/tests.png)
 
@@ -283,10 +299,14 @@ flowchart TD
 ### 4.3. Cyclomatic Complexity and Independent Paths
 The cyclomatic complexity ($V(G) = E - N + 2$) was calculated for critical methods to mathematically determine the required number of independent test paths.
 
+**Method used (McCabe):** $V(G) = 1 + D$, where $D$ is the number of decision points. We counted `if`/`else if`, loops, `catch`, each `case` plus `default` in a `switch`, and ternary `?:`. We did **not** add extra points for `&&` or `||` inside a condition.
+
+
 *   **`UnitConverter.convert()`:** $V(G) = 33$. Tests traverse independent paths within nested `switch` structures.
 *   **`GroceryListTest` (`addItem`):** $V(G) = 3$. Independent paths mapped to: item not in list, item exists + successful conversion, item exists + failed conversion.
-*   **`MealPlanFactoryTest` (`createMealPlan`):** $V(G) = 5$. Covered paths for all 4 plan types and the invalid fallback.
-*   **`PasswordUtilsTest` & `RecipeTest`:** Calculated and mapped paths for algorithmic loops and switch structures.
+*   **`MealPlanFactoryTest` (`createMealPlan`):** $V(G) = 6$. Covered paths for all 4 plan types, the invalid fallback, and the null input check.
+*   **`PasswordUtils.hashPassword()`**: $V(G) = 3$ (one loop + one catch).
+*   **`Recipe.setDuration()`**: $V(G) = 5$ (three `case` labels plus `default`).
 *   **`ConditionPathTest` (`RecipeFactory.createCustomRecipe()`):** Identified $V(G) = 31$ decision points resulting in 23 implemented independent tests (IP1-IP23), traversing all error states, alias mappings, and caloric modifiers.
 
 
@@ -294,20 +314,26 @@ The cyclomatic complexity ($V(G) = E - N + 2$) was calculated for critical metho
 
 ## 5. Mutation Testing
 
-To prove the rigor and fault-detection capability of our test suite, we injected artificial defects (mutants) into the source code. All non-equivalent mutants were successfully eliminated by dedicated "Killer Tests" in the `MutationTest` class.
+To evaluate fault-detection capability, we used two complementary approaches: handcrafted mutants in `MutationTest` (detailed in [Section 6.6](#66-mutationtest---fault-detection-capability-verification)) and an automated PIT report for the `backend.recipes` package.
 
-*   **Arithmetic Mutants:** Altered caloric multipliers (e.g., for the `Drink` category, the `kilocalories * 0.8` formula was mutated to `* 0.9`). The tests failed, validating the precision of our assertions (e.g., `mt6_killMutant_drinkKcalMultiplierIs08`).
-*   **Relational Mutants:** Modified comparison operators at boundary values (e.g., changing the hard-cap threshold from `> 5000` to `>= 5000`). The test suite immediately detected the mutation (`mt9_killMutant_dessertCapBoundaryIsStrictlyGreater`), proving that assertions strictly cover the established intervals.
-*   **Statement Deletion Mutants:** Tested the removal of the `.trim()` method call on string inputs. The defect was efficiently caught by `mt11_killMutant_nameTrimIsApplied`.
+### 5.1 PIT Mutation Testing Report
 
-The cyclomatic complexity ($V(G) = E - N + 2$) was then calculated for this and other critical methods to mathematically determine the required number of independent test paths based on their internal structures.
+**Scope:** `com.bitbites.bitbites2.backend.recipes`
 
-*   **`ConditionPathTest` (`RecipeFactory.createCustomRecipe()`):** Identified $V(G) = 31$ decision points resulting in 23 implemented independent tests (IP1-IP23), thoroughly traversing all error states, alias mappings, and caloric modifiers shown in the flowchart above.
-*   **`UnitConverter.convert()`:** $V(G) = 33$. Tests traverse independent paths within nested `switch` structures.
-*   **`GroceryListTest` (`addItem`):** $V(G) = 3$. Independent paths mapped to: item not in list, item exists + successful conversion, item exists + failed conversion.
-*   **`MealPlanFactoryTest` (`createMealPlan`):** $V(G) = 5$. Covered paths for all 4 plan types and the invalid fallback.
-*   **`PasswordUtilsTest` & `RecipeTest`:** Calculated and mapped paths for algorithmic loops and switch structures.
+| Scope | Classes | Line Coverage | Mutation Coverage | Test Strength |
+| :--- | :---: | :---: | :---: | :---: |
+| Package Summary | 2 | 29% (62/212) | 38% (29/77) | 81% (29/36) |
 
+**Breakdown by Class:**
+
+| Class | Line Coverage | Mutation Coverage | Test Strength |
+| :--- | :---: | :---: | :---: |
+| `Recipe.java` | 30% (18/61) | 17% (4/23) | 100% (4/4) |
+| `RecipeFactory.java` | 29% (44/151) | 46% (25/54) | 78% (25/32) |
+
+These PIT results highlight remaining mutation gaps in the recipes package and complement the targeted, handcrafted mutants in `MutationTest`.
+
+![PIT Test Coverage Report](images/Pit.jpeg)
 ---
 
 ## 6. Recipe Factory Tests - Deep Dive Analysis
@@ -646,7 +672,7 @@ Final Result: kilocalories = 5000.0 is THOROUGHLY validated
 4. **ConditionPathTest** (validate logic decisions)
 5. **MutationTest** (verify test quality)
 
-**Expected Results:** All 186 tests pass ✅
+**Expected Results:** All 196 tests pass ✅
 
 ---
 
