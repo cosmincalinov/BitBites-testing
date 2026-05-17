@@ -86,7 +86,7 @@ graph TD;
 ---
 ## Database
 
-- implemented using ProsgreSQL 
+- implemented using PostgreSQL 
 - needed to add some Model classes in order to make the database
   - collections and arrays from the objects are transform in foreign keys in included classes
   - added records to store the id keys and the foreign keys
